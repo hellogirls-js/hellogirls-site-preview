@@ -78,7 +78,7 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
     display: "flex",
     flexFlow: "column nowrap",
     boxSizing: "border-box",
-    fontSize: "1.5rem",
+    fontSize: "1.8rem",
   };
 
   const COLORS: string[] = [
@@ -191,17 +191,6 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
         <div style={adStyles}>
           <p
             style={{
-              fontFamily: "Inter Bold",
-              margin: 0,
-              marginLeft: "2%",
-              fontSize: "1.2rem",
-              color: "#6b65a8",
-            }}
-          >
-            where did your fave place?
-          </p>
-          <p
-            style={{
               backgroundColor: "#ddd6ff",
               color: "#8f81d4",
               padding: "2%",
@@ -240,6 +229,102 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
   );
 }
 
+function FullOGImage() {
+  const containerStyles: CSSProperties = {
+    backgroundImage: "linear-gradient(to left, #ddd6ff 45%, #f5f4fa 45%)",
+    color: "#131038",
+    display: "flex",
+    width: "100%",
+    height: "100%",
+    boxSizing: "border-box",
+  };
+
+  const leftSide: CSSProperties = {
+    display: "flex",
+    flexFlow: "column nowrap",
+    flexBasis: "45%",
+  };
+
+  const rightSide: CSSProperties = {
+    display: "flex",
+    alignItems: "flex-start",
+  };
+
+  const headingContainerStyles: CSSProperties = {
+    marginTop: "3%",
+    display: "flex",
+    height: "auto",
+    backgroundColor: "#635caf",
+    borderRadius: "0px 10px 10px 0px",
+    padding: "2%",
+  };
+
+  const headingStyles: CSSProperties = {
+    margin: 0,
+    fontFamily: "SpaceMono",
+    color: "#fff",
+    fontSize: "2.5rem",
+  };
+
+  const adStyles: CSSProperties = {
+    display: "flex",
+    flexFlow: "column nowrap",
+    boxSizing: "border-box",
+    fontSize: "2rem",
+    marginTop: 100,
+  };
+
+  return (
+    <div style={containerStyles}>
+      <div style={leftSide}>
+        <div style={headingContainerStyles}>
+          <h1 style={headingStyles}>
+            how well did my favorite character do...?
+          </h1>
+        </div>
+        <p style={{ fontSize: "1.8rem", marginLeft: "2%" }}>
+          HiMERU wonders as well.
+        </p>
+        <div style={adStyles}>
+          <p
+            style={{
+              fontFamily: "Inter Bold",
+              fontSize: "1.8rem",
+              margin: 0,
+              marginLeft: "2%",
+              color: "#6b65a8",
+            }}
+          >
+            find out here!
+          </p>
+          <p
+            style={{
+              backgroundColor: "#ddd6ff",
+              color: "#8f81d4",
+              padding: "2%",
+              textDecoration: "underline",
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+            }}
+          >
+            https://hellogirls.info/projects/survey/2023/hall-of-fame
+          </p>
+        </div>
+      </div>
+      <div style={rightSide}>
+        <img
+          src="https://static.wikia.nocookie.net/ensemble-stars/images/2/23/KR_Enstars!!_Stickers_1_HiMERU.png"
+          alt="himeru thinking"
+          width={650}
+          style={{
+            marginRight: 100,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export async function GET(req: Request) {
   try {
     const spaceMonoData = await fetch(
@@ -261,26 +346,33 @@ export async function GET(req: Request) {
     const { searchParams } = REQ_URL;
 
     const hasPlace = searchParams.has("place");
-    const place = hasPlace ? (searchParams.get("place") as string) : "51";
+    const place = hasPlace ? (searchParams.get("place") as string) : "";
 
-    return new ImageResponse(<OGImage place={place} charaData={data} />, {
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: "SpaceMono",
-          data: spaceMonoData,
-        },
-        {
-          name: "Inter",
-          data: interData,
-        },
-        {
-          name: "Inter Bold",
-          data: interBoldData,
-        },
-      ],
-    });
+    return new ImageResponse(
+      place.length > 0 ? (
+        <OGImage place={place} charaData={data} />
+      ) : (
+        <FullOGImage />
+      ),
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: "SpaceMono",
+            data: spaceMonoData,
+          },
+          {
+            name: "Inter",
+            data: interData,
+          },
+          {
+            name: "Inter Bold",
+            data: interBoldData,
+          },
+        ],
+      },
+    );
   } catch (e: any) {
     console.error(`${e.message}`);
     return new Response(`${req.url}: Failed to create image`, {
