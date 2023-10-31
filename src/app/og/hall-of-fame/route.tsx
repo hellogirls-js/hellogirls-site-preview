@@ -257,7 +257,10 @@ export async function GET(req: Request) {
 
   const { data } = charaDataRes;
 
-  const { hash } = new URL(req.url);
+  const REQ_URL = new URL(req.url);
+  const { hash } = REQ_URL;
+
+  console.log(REQ_URL);
 
   return new ImageResponse(
     <OGImage place={parseInt(hash)} charaData={data} />,
