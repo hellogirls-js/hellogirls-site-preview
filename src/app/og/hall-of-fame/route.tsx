@@ -5,12 +5,12 @@ import { CountedVotes } from "@/types";
 
 export const runtime = "edge";
 
-function OGImage({ place, charaData }: { place: number; charaData: any[] }) {
+function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
   const rawVotes = getSurveyResponses();
   const countedVotes = countVotes("fave_chara");
   const groupedVotes = groupTies(countedVotes);
 
-  const group: CountedVotes[] = groupedVotes[place.toString()];
+  const group: CountedVotes[] = groupedVotes[place];
 
   const containerStyles: CSSProperties = {
     backgroundImage: "linear-gradient(to left, #ddd6ff 45%, #f5f4fa 45%)",
@@ -262,25 +262,22 @@ export async function GET(req: Request) {
 
   console.log(REQ_URL);
 
-  return new ImageResponse(
-    <OGImage place={parseInt(hash)} charaData={data} />,
-    {
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: "SpaceMono",
-          data: spaceMonoData,
-        },
-        {
-          name: "Inter",
-          data: interData,
-        },
-        {
-          name: "Inter Bold",
-          data: interBoldData,
-        },
-      ],
-    },
-  );
+  return new ImageResponse(<OGImage place={hash} charaData={data} />, {
+    width: 1200,
+    height: 630,
+    fonts: [
+      {
+        name: "SpaceMono",
+        data: spaceMonoData,
+      },
+      {
+        name: "Inter",
+        data: interData,
+      },
+      {
+        name: "Inter Bold",
+        data: interBoldData,
+      },
+    ],
+  });
 }
