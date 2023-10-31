@@ -258,29 +258,29 @@ export async function GET(req: Request) {
     const { data } = charaDataRes;
 
     const REQ_URL = new URL(req.url);
-    const { hash } = REQ_URL;
+    const { searchParams } = REQ_URL;
 
-    return new ImageResponse(
-      <OGImage place={hash.replace("#", "")} charaData={data} />,
-      {
-        width: 1200,
-        height: 630,
-        fonts: [
-          {
-            name: "SpaceMono",
-            data: spaceMonoData,
-          },
-          {
-            name: "Inter",
-            data: interData,
-          },
-          {
-            name: "Inter Bold",
-            data: interBoldData,
-          },
-        ],
-      },
-    );
+    const hasPlace = searchParams.has("place");
+    const place = hasPlace ? (searchParams.get("place") as string) : "51";
+
+    return new ImageResponse(<OGImage place={place} charaData={data} />, {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: "SpaceMono",
+          data: spaceMonoData,
+        },
+        {
+          name: "Inter",
+          data: interData,
+        },
+        {
+          name: "Inter Bold",
+          data: interBoldData,
+        },
+      ],
+    });
   } catch (e: any) {
     console.error(`${e.message}`);
     return new Response(`${req.url}: Failed to create image`, {
