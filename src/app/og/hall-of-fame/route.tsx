@@ -260,24 +260,25 @@ export async function GET(req: Request) {
   const REQ_URL = new URL(req.url);
   const { hash } = REQ_URL;
 
-  console.log(REQ_URL);
-
-  return new ImageResponse(<OGImage place={hash} charaData={data} />, {
-    width: 1200,
-    height: 630,
-    fonts: [
-      {
-        name: "SpaceMono",
-        data: spaceMonoData,
-      },
-      {
-        name: "Inter",
-        data: interData,
-      },
-      {
-        name: "Inter Bold",
-        data: interBoldData,
-      },
-    ],
-  });
+  return new ImageResponse(
+    <OGImage place={hash.replace("#", "")} charaData={data} />,
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: "SpaceMono",
+          data: spaceMonoData,
+        },
+        {
+          name: "Inter",
+          data: interData,
+        },
+        {
+          name: "Inter Bold",
+          data: interBoldData,
+        },
+      ],
+    },
+  );
 }
