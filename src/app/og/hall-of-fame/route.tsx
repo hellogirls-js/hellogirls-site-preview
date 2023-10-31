@@ -240,7 +240,7 @@ function OGImage({ place, charaData }: { place: number; charaData: any[] }) {
   );
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   // const { hash } = new URL(request.url);
   const spaceMonoData = await fetch(
     "https://assets.hellogirls.info/fonts/SpaceMono-Bold.ttf",
@@ -257,22 +257,27 @@ export async function GET() {
 
   const { data } = charaDataRes;
 
-  return new ImageResponse(<OGImage place={4} charaData={data} />, {
-    width: 1200,
-    height: 630,
-    fonts: [
-      {
-        name: "SpaceMono",
-        data: spaceMonoData,
-      },
-      {
-        name: "Inter",
-        data: interData,
-      },
-      {
-        name: "Inter Bold",
-        data: interBoldData,
-      },
-    ],
-  });
+  const { hash } = new URL(req.url);
+
+  return new ImageResponse(
+    <OGImage place={parseInt(hash)} charaData={data} />,
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: "SpaceMono",
+          data: spaceMonoData,
+        },
+        {
+          name: "Inter",
+          data: interData,
+        },
+        {
+          name: "Inter Bold",
+          data: interBoldData,
+        },
+      ],
+    },
+  );
 }
