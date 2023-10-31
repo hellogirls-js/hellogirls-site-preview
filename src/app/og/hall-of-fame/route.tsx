@@ -241,44 +241,50 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
 }
 
 export async function GET(req: Request) {
-  // const { hash } = new URL(request.url);
-  const spaceMonoData = await fetch(
-    "https://assets.hellogirls.info/fonts/SpaceMono-Bold.ttf",
-  ).then((res) => res.arrayBuffer());
-  const interData = await fetch(
-    "https://assets.hellogirls.info/fonts/Inter-Regular.ttf",
-  ).then((res) => res.arrayBuffer());
-  const interBoldData = await fetch(
-    "https://assets.hellogirls.info/fonts/Inter-Bold.ttf",
-  ).then((res) => res.arrayBuffer());
-  const charaDataRes = await getData(
-    "https://tl.data.ensemble.moe/en/characters.json",
-  );
+  try {
+    const spaceMonoData = await fetch(
+      "https://assets.hellogirls.info/fonts/SpaceMono-Bold.ttf",
+    ).then((res) => res.arrayBuffer());
+    const interData = await fetch(
+      "https://assets.hellogirls.info/fonts/Inter-Regular.ttf",
+    ).then((res) => res.arrayBuffer());
+    const interBoldData = await fetch(
+      "https://assets.hellogirls.info/fonts/Inter-Bold.ttf",
+    ).then((res) => res.arrayBuffer());
+    const charaDataRes = await getData(
+      "https://tl.data.ensemble.moe/en/characters.json",
+    );
 
-  const { data } = charaDataRes;
+    const { data } = charaDataRes;
 
-  const REQ_URL = new URL(req.url);
-  const { hash } = REQ_URL;
+    const REQ_URL = new URL(req.url);
+    const { hash } = REQ_URL;
 
-  return new ImageResponse(
-    <OGImage place={hash.replace("#", "")} charaData={data} />,
-    {
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: "SpaceMono",
-          data: spaceMonoData,
-        },
-        {
-          name: "Inter",
-          data: interData,
-        },
-        {
-          name: "Inter Bold",
-          data: interBoldData,
-        },
-      ],
-    },
-  );
+    return new ImageResponse(
+      <OGImage place={hash.replace("#", "")} charaData={data} />,
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: "SpaceMono",
+            data: spaceMonoData,
+          },
+          {
+            name: "Inter",
+            data: interData,
+          },
+          {
+            name: "Inter Bold",
+            data: interBoldData,
+          },
+        ],
+      },
+    );
+  } catch (e: any) {
+    console.error(`${e.message}`);
+    return new Response(`${req.url}: Failed to create image`, {
+      status: 500,
+    });
+  }
 }
