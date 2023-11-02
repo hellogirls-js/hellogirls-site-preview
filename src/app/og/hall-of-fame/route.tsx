@@ -69,6 +69,7 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
     width: "90%",
     minHeight: 20,
     display: "flex",
+    flexFlow: "row wrap",
     alignItems: "center",
     gap: 30,
     fontFamily: "Inter",
@@ -84,9 +85,9 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
   const COLORS: string[] = [
     "#78821d",
     "#8a961d",
-    "#8e9c19",
-    "#9cab15",
-    "#a9ba11",
+    "#94a317",
+    "#a1b310",
+    "#aec20a",
   ];
   const OTHER_COLOR: string = "#cecae3";
 
@@ -102,36 +103,37 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
     <div style={containerStyles}>
       <div style={leftSide}>
         <div style={headingContainerStyles}>
-          <h1 style={headingStyles}>my fave is in {place}th place!</h1>
+          <h1 style={headingStyles}>
+            my fave is in {place}
+            {place.endsWith("1") && place !== "11"
+              ? "st"
+              : place.endsWith("2") && place !== "12"
+              ? "nd"
+              : place.endsWith("3") && place !== "13"
+              ? "rd"
+              : "th"}{" "}
+            place!
+          </h1>
         </div>
         <p
           style={{ fontFamily: "Inter", fontSize: "1.7rem", paddingLeft: "2%" }}
         >
-          {group.map((chara: CountedVotes, index: number) => (
-            <>
-              <strong
-                style={{
-                  color: "#6b65a8",
-                  fontFamily: "Inter Bold",
-                  marginRight: 5,
-                  marginLeft: index > 0 ? 3 : 0,
-                }}
-              >
-                {
-                  charaData.filter(
-                    (ch: any) => ch.character_id === chara.chara_id,
-                  )[0].first_name
-                }
-              </strong>
-              {group.length > 2 && index < group.length - 2
-                ? ", "
-                : group.length > 2 && index < group.length - 1
-                ? ", and "
-                : group.length === 2 && index < group.length - 1
-                ? " and "
-                : ""}
-            </>
-          ))}
+          {group.map(
+            (chara: CountedVotes, index: number) =>
+              `${
+                charaData.filter(
+                  (ch: any) => ch.character_id === chara.chara_id,
+                )[0].first_name
+              }${
+                group.length > 2 && index < group.length - 2
+                  ? ", "
+                  : group.length > 2 && index < group.length - 1
+                  ? ", and "
+                  : group.length === 2 && index < group.length - 1
+                  ? " and "
+                  : ""
+              }`,
+          )}
           {group.length === 2 ? " both " : group.length > 2 ? " all " : " "}
           received {group[0].count} votes!
         </p>
@@ -207,17 +209,28 @@ function OGImage({ place, charaData }: { place: string; charaData: any[] }) {
         <div
           style={{
             width: "100%",
+            height: group.length >= 3 ? "100%" : "auto",
             display: "flex",
-            alignItems: "flex-end",
-            gap: -400 + group.length * 50,
+            flexDirection: group.length < 3 ? "row" : "column",
+            alignItems: group.length < 3 ? "flex-end" : "flex-start",
+            marginLeft:
+              group.length < 3
+                ? 200 - group.length * (group.length === 2 ? 100 : 50)
+                : 300,
+            justifyContent: group.length >= 3 ? "space-around" : "flex-start",
+            gap: group.length < 3 ? -300 + group.length * 50 : "3%",
           }}
         >
           {group.map((chara: CountedVotes) => (
             <img
-              src={`https://assets.hellogirls.info/renders/character_full1_${chara.chara_id}.png`}
+              src={
+                group.length < 3
+                  ? `https://assets.hellogirls.info/renders/character_full1_${chara.chara_id}.png`
+                  : `https://assets.enstars.link/assets/character_sd_square1_${chara.chara_id}.png`
+              }
               key={chara.chara_id}
               alt="chara"
-              height={1200}
+              height={group.length < 3 ? 1200 : 100}
               style={{
                 filter: "drop-shadow(5px 5px 0px #f5f4fa)",
               }}
